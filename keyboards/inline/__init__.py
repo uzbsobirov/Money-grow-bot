@@ -1,1 +1,3 @@
-from . import help
+from . import (
+    check, invest
+)
