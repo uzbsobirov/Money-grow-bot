@@ -1,4 +1,5 @@
 from handlers.detectors import detect_is_admin
+from keyboards.inline.invest.types import invest_types
 from loader import dp, bot
 
 from states.invest import Invest
@@ -27,3 +28,12 @@ async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer_photo(photo=photo, caption=text, reply_markup=await detect_is_admin(user_id=user_id))
 
     await state.finish()
+
+
+@dp.callback_query_handler(text='back', state=Invest.buy)
+async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
+    text = "<b>⬇️ Quyidagi tarflardan birini tanlang:</b>"
+
+    await call.message.edit_text(text=text, reply_markup=invest_types)
+
+    await Invest.types.set()

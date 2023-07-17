@@ -30,6 +30,16 @@ async def bot_start(message: types.Message):
             join_date=today
         )
 
+        await db.add_user_data(
+            user_id=user_id,
+            balance=0,
+            type_invest=None,
+            end_invest_date=0,
+            parent_id=0,
+            count=0,
+            join_date=today
+        )
+
         # About message to ADMIN
         msg = f"{user_mention} [<code>{user_id}</code>] bazaga qo'shildi."
         await bot.send_message(chat_id=ADMINS[0], text=msg)

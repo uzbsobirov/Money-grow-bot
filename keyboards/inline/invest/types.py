@@ -5,23 +5,26 @@ invest_types = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="⚫️ Temir", callback_data='tarif_temir'
+                text="Vib 1", callback_data='tarif_one'
             ),
             InlineKeyboardButton(
-                text="🟤 Bronza", callback_data='tarif_bronza'
-            ),
-        ],
-        [
-            InlineKeyboardButton(
-                text="🔘 Kumush", callback_data='tarif_kumush'
-            ),
-            InlineKeyboardButton(
-                text="🟡 Oltin", callback_data='tarif_oltin'
+                text="Vib 2", callback_data='tarif_two'
             ),
         ],
         [
             InlineKeyboardButton(
-                text="💎 Olmos", callback_data='tarif_olmos'
+                text="Vib 3", callback_data='tarif_three'
+            ),
+            InlineKeyboardButton(
+                text="Vib 4", callback_data='tarif_four'
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text="Vib 5", callback_data='tarif_five'
+            ),
+            InlineKeyboardButton(
+                text="Vib 6", callback_data='tarif_six'
             )
         ],
         [

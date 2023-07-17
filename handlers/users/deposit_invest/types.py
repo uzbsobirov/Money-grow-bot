@@ -1,3 +1,4 @@
+from keyboards.inline.buy import purchase
 from loader import dp
 from keyboards.inline.invest.types import invest_types
 from states.invest import Invest
@@ -28,4 +29,6 @@ async def get_invest_types(call: types.CallbackQuery, state: FSMContext):
            f"<b>▫️ Kunlik daromad:</b> {type[3]} so'm\n\n" \
            f"Sarmoya kiritsangiz {type[4]} kun davomida kunlik {type[3]} so'm hisobingizga qo'shilib boradi!"
 
-    await call.message.edit_text(text)
+    await call.message.edit_text(text, reply_markup=purchase(data=splited[1]))
+
+    await Invest.buy.set()
