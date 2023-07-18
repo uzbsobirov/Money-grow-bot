@@ -63,6 +63,7 @@ class Database:
         end_invest_date BigInt,
         parent_id BigInt,
         count BigInt,
+        deposit BigInt NULL,
         join_date DATE
         );
         """
@@ -92,10 +93,10 @@ class Database:
         sql = "INSERT INTO users (full_name, username, user_id, join_date) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, full_name, username, user_id, join_date, fetchrow=True)
 
-    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, join_date: str):
-        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, join_date) " \
-              "VALUES($1, $2, $3, $4, $5, $6, $7) returning *"
-        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, join_date, fetchrow=True)
+    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, deposit, join_date: str):
+        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, join_date) " \
+              "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *"
+        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, join_date, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
@@ -125,6 +126,10 @@ class Database:
     async def update_user_issubs(self, issubs, user_id):
         sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
         return await self.execute(sql, issubs, user_id, execute=True)
+
+    async def update_user_count(self, user_id):
+        sql = "UPDATE UserData SET count=count+1 WHERE user_id=$1"
+        return await self.execute(sql, user_id, execute=True)
 
     async def delete_user(self, user_id):
         sql = "DELETE FROM Users WHERE user_id=$1"

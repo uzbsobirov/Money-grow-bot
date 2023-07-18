@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram.utils.deep_linking import get_start_link
 
 from data.config import ADMINS
 from loader import dp, db, bot
@@ -17,6 +18,10 @@ async def bot_start(message: types.Message):
     full_name = message.from_user.full_name
     username = message.from_user.username
     user_id = message.from_user.id
+
+    link = await get_start_link(user_id)
+    args = message.get_args()
+
     user_mention = message.from_user.get_mention(name=full_name, as_html=True)
     bot_get_me = await bot.get_me()
     bot_username = bot_get_me.username
@@ -30,15 +35,31 @@ async def bot_start(message: types.Message):
             join_date=today
         )
 
-        await db.add_user_data(
-            user_id=user_id,
-            balance=0,
-            type_invest=None,
-            end_invest_date=0,
-            parent_id=0,
-            count=0,
-            join_date=today
-        )
+        if args:
+            if int(args) != user_id:
+                await db.add_user_data(
+                    user_id=user_id,
+                    balance=0,
+                    type_invest=None,
+                    end_invest_date=0,
+                    parent_id=int(args),
+                    count=0,
+                    deposit=0,
+                    join_date=today
+                )
+                await db.update_user_count(user_id=int(args))
+
+        else:
+            await db.add_user_data(
+                user_id=user_id,
+                balance=0,
+                type_invest=None,
+                end_invest_date=0,
+                parent_id=0,
+                count=0,
+                deposit=0,
+                join_date=today
+            )
 
         # About message to ADMIN
         msg = f"{user_mention} [<code>{user_id}</code>] bazaga qo'shildi."
@@ -51,7 +72,7 @@ async def bot_start(message: types.Message):
     all_sponsors = await db.select_all_sponsor()
 
     if len(all_sponsors) == 0:
-        photo = "https://t.me/almaz_medias/2"
+        photo = "https://t.me/almaz_medias/4"
         text = f"👤 Assalomu alaykum, hurmatli {full_name}!\n" \
                "📝 Botimiz qoidalari:\n▪️Balansni to'ldiring\n" \
                "▪️Investitsiya kiriting\n▪️Pulni hisobingizga yechib oling\n\n" \
