@@ -1,8 +1,8 @@
 import logging
 
 from data.config import ADMINS
-from loader import dp, bot
-from states.balance import Balance
+from loader import dp, bot, db
+from states.balance import Balance, Payment
 from keyboards.inline.balance.menu import payment_time
 from keyboards.default.back import back
 from handlers.detectors import detect_is_admin
@@ -70,4 +70,56 @@ async def get_payment_check(message: types.Message, state: FSMContext):
         logging.info(error)
 
 
+@dp.callback_query_handler(text_contains="checked_", state='*')
+async def user_id_paid(call: types.CallbackQuery, state: FSMContext):
+    data = call.data
+    splited = data.split('_')
 
+    if splited[0] == 'checked':
+        await state.update_data(
+            {'checked_user_id': splited[1]}
+        )
+
+        await call.message.delete()
+
+        text = "<b>Foydalanuvchi balansini nech pul bilan to'ldirmoqchisiz?\n\nMasalan: <code>30000</code></b>"
+        await call.message.answer(text, reply_markup=types.ReplyKeyboardRemove())
+
+        await Payment.payment_time.set()
+
+    elif splited[0] == 'unchecked':
+        pass
+
+
+@dp.message_handler(state=Payment.payment_time)
+async def payment_touser(message: types.Message, state: FSMContext):
+    msg = message.text
+    data = await state.get_data()
+    user_id = data.get('checked_user_id')
+
+    try:
+        summa = int(msg)
+
+        select_user = await db.select_user_data(int(user_id))
+        deposit = select_user[0][7]
+        balance = select_user[0][2]
+        print(balance, deposit)
+
+        real_balance = balance + summa
+        real_deposit = deposit + summa
+        print(real_deposit, real_balance)
+
+        await db.update_user_balance(balance=real_balance, deposit=real_deposit, user_id=int(user_id))
+
+        text = f"<b>Hisobingizni {summa} Soʻm💸ga to'ldirish bo'yicha " \
+               f"yuborgan so'rovingiz qabul qilindi va balansizga tushirildi!</b>"
+        await bot.send_message(chat_id=user_id, text=text, reply_markup=await detect_is_admin(user_id))
+
+        await bot.send_message(chat_id=message.chat.id, text=f"Foydalanuvchi balansi {summa} so'm bilan to'ldirildi",
+                               reply_markup=await detect_is_admin(user_id))
+
+        await state.finish()
+
+    except Exception as error:
+        logging.info(error)
+        await message.answer(text="Iltimos, faqat raqamlardan foydalaning")
