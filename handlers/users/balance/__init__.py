@@ -1,3 +1,3 @@
 from . import (
-    menu
+    menu, deposit_money
 )

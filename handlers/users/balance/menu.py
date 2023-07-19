@@ -29,4 +29,4 @@ async def check_user_balance(message: types.Message, state: FSMContext):
 
     await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
 
-    await Balance.balance.set()
+    await Balance.menu.set()

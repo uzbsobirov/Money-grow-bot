@@ -1,3 +1,3 @@
 from . import (
-    check, invest, buy, balance
+    check, invest, buy, balance, admin
 )

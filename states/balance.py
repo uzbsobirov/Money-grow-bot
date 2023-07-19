@@ -2,4 +2,7 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
 class Balance(StatesGroup):
-    balance = State()
+    menu = State()
+
+    deposit = State()
+    checkout = State()
