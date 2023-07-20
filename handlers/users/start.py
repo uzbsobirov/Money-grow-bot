@@ -45,6 +45,7 @@ async def bot_start(message: types.Message):
                     parent_id=int(args),
                     count=0,
                     deposit=0,
+                    active_count=0,
                     join_date=today
                 )
                 await db.update_user_count(user_id=int(args))
@@ -58,6 +59,7 @@ async def bot_start(message: types.Message):
                 parent_id=0,
                 count=0,
                 deposit=0,
+                active_count=0,
                 join_date=today
             )
 

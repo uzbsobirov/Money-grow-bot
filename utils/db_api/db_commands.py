@@ -64,6 +64,7 @@ class Database:
         parent_id BigInt,
         count BigInt,
         deposit BigInt NULL,
+        active_count BIgInt,
         join_date DATE
         );
         """
@@ -93,13 +94,17 @@ class Database:
         sql = "INSERT INTO users (full_name, username, user_id, join_date) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, full_name, username, user_id, join_date, fetchrow=True)
 
-    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, deposit, join_date: str):
-        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, join_date) " \
-              "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *"
-        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, join_date, fetchrow=True)
+    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, deposit, active_count, join_date: str):
+        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, join_date) " \
+              "VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *"
+        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, join_date, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
+        return await self.execute(sql, fetch=True)
+
+    async def select_all_users_datas(self):
+        sql = "SELECT * FROM UserData"
         return await self.execute(sql, fetch=True)
 
     async def select_all_sponsor(self):

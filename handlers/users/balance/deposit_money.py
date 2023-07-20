@@ -62,9 +62,9 @@ async def get_payment_check(message: types.Message, state: FSMContext):
         await bot.send_message(chat_id=message.chat.id, text=text, reply_markup=await detect_is_admin(user_id))
 
         await bot.send_photo(chat_id=ADMINS[0], photo=photo_file_id, caption=caption,
-                             reply_markup=admin_check_payment(user_id))
+                                               reply_markup=admin_check_payment(user_id))
 
-        await state.finish()
+        await state.reset_state(with_data=False)
 
     except Exception as error:
         logging.info(error)
@@ -74,6 +74,7 @@ async def get_payment_check(message: types.Message, state: FSMContext):
 async def user_id_paid(call: types.CallbackQuery, state: FSMContext):
     data = call.data
     splited = data.split('_')
+    state_data = await state.get_data()
 
     if splited[0] == 'checked':
         await state.update_data(
@@ -88,7 +89,14 @@ async def user_id_paid(call: types.CallbackQuery, state: FSMContext):
         await Payment.payment_time.set()
 
     elif splited[0] == 'unchecked':
-        pass
+        text = f"<b>⚠️ Hisobingizni to'ldirish bo'yicha yuborgan so'rovingiz qabul qilinmadi!</b>"
+        await bot.send_message(chat_id=splited[1], text=text, reply_markup=await detect_is_admin(user_id=splited[1]))
+
+        await call.message.delete()
+
+        await bot.send_message(chat_id=call.message.chat.id, text="Hisob to'ldirish bekor qilindi",
+                               reply_markup=await detect_is_admin(splited[1]))
+        await state.finish()
 
 
 @dp.message_handler(state=Payment.payment_time)
@@ -103,11 +111,9 @@ async def payment_touser(message: types.Message, state: FSMContext):
         select_user = await db.select_user_data(int(user_id))
         deposit = select_user[0][7]
         balance = select_user[0][2]
-        print(balance, deposit)
 
         real_balance = balance + summa
         real_deposit = deposit + summa
-        print(real_deposit, real_balance)
 
         await db.update_user_balance(balance=real_balance, deposit=real_deposit, user_id=int(user_id))
 
