@@ -14,7 +14,7 @@ async def give_information(message: types.Message, state: FSMContext):
 
     photo_id = "https://t.me/almaz_medias/6"
     text = f"🔗 Sizning taklif xavolangiz:\n\n<code>{link}</code>\n\n" \
-           f"amida 4 ta aktiv investor taklif qilganingizdan soʻng sizga haftalik maosh olish imkoniyati ochiladi"
+           "Kamida 4 ta aktiv investor taklif qilganingizdan soʻng sizga haftalik maosh olish imkoniyati ochiladi"
 
     await message.answer_photo(photo=photo_id, caption=text)
 

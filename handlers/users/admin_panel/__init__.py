@@ -1,3 +1,3 @@
 from . import (
-    set_sponsor
+    set_sponsor, statistic
 )

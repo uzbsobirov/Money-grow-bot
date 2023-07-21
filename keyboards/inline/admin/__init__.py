@@ -1,3 +1,3 @@
 from . import (
-    success_payment, add_sponsor
+    success_payment, add_sponsor, support
 )

@@ -9,9 +9,5 @@ class Panel(StatesGroup):
     get_data = State()
     delete = State()
 
-    #add_card
-    add_card = State()
-    get_number = State()
-    get_name = State()
-    get_callback_data = State()
-    get_owner_name = State()
+    # statistic
+    statistic = State()
