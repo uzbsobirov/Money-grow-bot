@@ -11,3 +11,6 @@ class Panel(StatesGroup):
 
     # statistic
     statistic = State()
+
+    # Answer to user
+    answer_to_user = State()

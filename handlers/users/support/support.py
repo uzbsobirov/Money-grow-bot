@@ -20,7 +20,6 @@ async def support_to_admin(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=Support.text, content_types=types.ContentType.ANY)
 async def get_support_text(message: types.Message, state: FSMContext):
-    msg = message.text
     user_id = message.from_user.id
 
     await message.answer(
@@ -29,5 +28,9 @@ async def get_support_text(message: types.Message, state: FSMContext):
     )
 
     await message.send_copy(chat_id=ADMINS[0], reply_markup=answer_to_user(user_id))
+
+    await state.update_data(
+        {'answer_user_id': user_id}
+    )
 
     await state.reset_state(with_data=False)
