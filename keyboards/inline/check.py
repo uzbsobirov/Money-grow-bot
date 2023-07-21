@@ -5,8 +5,9 @@ def check(sponsors, status):
     markup = InlineKeyboardMarkup(row_width=1)
 
     for item in sponsors:
-        if status:
+        if status == 0:
             pass
+
         else:
             markup.insert(
                 InlineKeyboardButton(

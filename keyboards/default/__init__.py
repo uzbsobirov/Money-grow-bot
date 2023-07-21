@@ -1,3 +1,3 @@
 from . import (
-    start, back
+    start, back, panel
 )

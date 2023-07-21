@@ -83,16 +83,18 @@ async def bot_start(message: types.Message):
                f"💬 Rasmiy guruh: @{bot_username}\n📢 Yangiliklar kanali: @{bot_username}"
         await message.answer_photo(photo=photo, caption=text, reply_markup=await detect_is_admin(user_id=user_id))
     else:
-        sub_status = False
+        sub_status = 0
+
         for item in all_sponsors:
             check_user = await check_is_subs(user_id=user_id, chat_id=item[1])
             if check_user:
-                sub_status = True
-            else:
                 pass
 
-        if not sub_status:
-            text = "You have to subscribe to the channels and groups"
+            else:
+                sub_status += 1
+
+        if sub_status != 0:
+            text = "⚠️ Botdan to'liq foydalanish uchun quyidagi kanallarimizga obuna bo'ling!   "
             await message.answer(text=text, reply_markup=check(sponsors=all_sponsors, status=sub_status))
 
         else:
