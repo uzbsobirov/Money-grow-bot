@@ -7,6 +7,10 @@ class Balance(StatesGroup):
     deposit = State()
     checkout = State()
 
+    withdraw = State()
+    money = State()
+
 
 class Payment(StatesGroup):
     payment_time = State()
+
