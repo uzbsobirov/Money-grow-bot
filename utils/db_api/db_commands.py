@@ -141,6 +141,10 @@ class Database:
         sql = "UPDATE UserData SET balance=$1, deposit=$2 WHERE user_id=$3"
         return await self.execute(sql, balance, deposit, user_id, execute=True)
 
+    async def update_user_balancee(self, balance, user_id):
+        sql = "UPDATE UserData SET balance=$1 WHERE user_id=$2"
+        return await self.execute(sql, balance, user_id, execute=True)
+
     async def update_user_count(self, user_id):
         sql = "UPDATE UserData SET count=count+1 WHERE user_id=$1"
         return await self.execute(sql, user_id, execute=True)

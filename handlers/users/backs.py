@@ -4,6 +4,7 @@ from loader import dp, bot, db
 from keyboards.default.panel.menu import menues
 from keyboards.inline.balance.menu import menues as balans_menu, payment_time
 from states.balance import Balance
+from keyboards.default.back import back
 
 from states.invest import Invest
 from states.panel import Panel
@@ -128,3 +129,48 @@ async def move_to_admin_menu(message: types.Message, state: FSMContext):
     )
 
     await Balance.deposit.set()
+
+
+@dp.message_handler(text='◀️ Orqaga', state=Balance.withdraw)
+async def move_to_main_menu(message: types.Message, state: FSMContext):
+    get_bot = await bot.get_me()
+    bot_username = get_bot.username
+    user_id = message.from_user.id
+
+    link = await get_start_link(user_id)
+
+    select_user = await db.select_user_data(user_id=user_id)
+    balance = select_user[0][2]
+    deposit = select_user[0][7]
+    parent_id = select_user[0][5]
+
+    photo = "https://t.me/almaz_medias/3"
+    text = "<b>┌🏛 Sizning botdagi kabinetingiz\n" \
+           f"├Link: <code>{link}</code>\n├Botdagi vazifa: Foydalanuvchi\n" \
+           f"├ID raqamingiz: {user_id}\n" \
+           f"├Asosiy balans: {balance} so'm\n├Depozitingiz: {deposit} so'm\n" \
+           f"├Sizni taklif qildi: {parent_id}\n├\n└@{bot_username} - Yuqori daromad!</b>"
+
+    await message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+
+    await Balance.menu.set()
+
+
+@dp.message_handler(text='◀️ Orqaga', state=Balance.money)
+async def move_to_main_menu(message: types.Message, state: FSMContext):
+    text = "<b>Pul yechib olish uchun karta raqami kiriting...\n\n" \
+           "<i>Mavjud to'lov turlari</i>\n▪️Qiwi\n▪️TRC 20\n▪️Payeer</b>"
+
+    await message.answer(text, reply_markup=back)
+
+    await Balance.withdraw.set()
+
+
+@dp.message_handler(text='◀️ Orqaga', state=Balance.cancel_payment)
+async def move_to_main_menu(message: types.Message, state: FSMContext):
+    user_id = message.from_user.id
+
+    text = "🖥 Asosiy menu"
+    await message.answer(text=text, reply_markup=await detect_is_admin(user_id))
+
+    await state.finish()

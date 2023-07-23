@@ -1,6 +1,8 @@
 import logging
 
 from handlers.detectors import detect_is_admin
+from keyboards.default.start import start_admin
+from keyboards.inline.admin.success_payment import withdraw_money_balance
 from loader import dp, bot, db
 from data.config import ADMINS
 from keyboards.default.back import back
@@ -41,17 +43,26 @@ async def identify_card(message: types.Message, state: FSMContext):
         reply_markup=back
     )
 
+    await state.update_data(
+        {'card_number': msg}
+    )
+
     await Balance.money.set()
 
 
 @dp.message_handler(state=Balance.money, content_types=types.ContentType.TEXT)
 async def identify_how_much_money(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    card_number = data.get('card_number')
+
     user_id = message.from_user.id
+    full_name = message.from_user.full_name
+    user_mention = message.from_user.get_mention(name=full_name)
 
     msg = message.text
 
     select_user = await db.select_user_data(user_id)
-    balance = select_user[0][1]
+    balance = select_user[0][2]
 
     try:
         summa = int(msg)
@@ -63,10 +74,12 @@ async def identify_how_much_money(message: types.Message, state: FSMContext):
                     reply_markup=await detect_is_admin(user_id)
                 )
 
-                # await
+                admin_text = f"👤 {user_mention}\n💳 {card_number}\n💸 {summa} so'm\n💰 {balance}"
 
-                await state.update_data(
-                    {'withdraw_user_id': user_id, 'how_much_money': summa}
+                await bot.send_message(
+                    chat_id=ADMINS[0],
+                    text=admin_text,
+                    reply_markup=withdraw_money_balance(user_id, summa)
                 )
 
                 await state.reset_state(with_data=False)
@@ -92,4 +105,77 @@ async def identify_how_much_money(message: types.Message, state: FSMContext):
         )
 
 
+@dp.callback_query_handler(text_contains="tolandi_", state='*')
+async def final_withdraw(call: types.CallbackQuery, state: FSMContext):
+    data = call.data
+    splited = data.split('_')
 
+    user_id = splited[1]
+    summa = splited[2]
+
+    select_user_data = await db.select_user_data(int(user_id))
+    balance = select_user_data[0][2]
+
+    end_balance = balance - int(summa)
+    ended = await db.update_user_balancee(end_balance, int(user_id))
+
+    await call.message.delete()
+
+    await bot.send_message(
+        chat_id=call.message.chat.id,
+        text="Foydalanuvchi puli to'lab berildi",
+        reply_markup=start_admin
+    )
+
+    await bot.send_message(
+        chat_id=user_id,
+        text=f"Sizning pul yechish so'rovingiz qabul qilindi va {summa} so'm to'lab berildi",
+        reply_markup=await detect_is_admin(user_id)
+    )
+
+    await state.finish()
+
+
+@dp.callback_query_handler(text_contains="bekor_qilish_", state='*')
+async def final_withdraw(call: types.CallbackQuery, state: FSMContext):
+    data = call.data
+    splited = data.split('_')
+
+    user_id = splited[2]
+    summa = splited[3]
+
+    await call.message.delete()
+
+    await state.update_data(
+        {'final_id': user_id, 'final_summa': summa}
+    )
+
+    await bot.send_message(
+        chat_id=call.message.chat.id,
+        text="To'lov bekor bo'lishining sababini kiriting",
+        reply_markup=back
+    )
+
+    await Balance.cancel_payment.set()
+
+
+@dp.message_handler(state=Balance.cancel_payment, content_types=types.ContentType.TEXT)
+async def cancel_payment_user(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    user_id = data.get('final_id')
+    final_summa = data.get('final_summa')
+
+    msg = message.text
+
+    await bot.send_message(
+        chat_id=user_id,
+        text=f"Sizning {final_summa} so'm chiqarishdagi harakatingiz bekor qilindi\n\nSabab: {msg}"
+    )
+
+    await bot.send_message(
+        chat_id=message.chat.id,
+        text="Xabar foydalanuvchiga yuborildi va to'lov harakati bekor qilindi",
+        reply_markup=start_admin
+    )
+
+    await state.finish()

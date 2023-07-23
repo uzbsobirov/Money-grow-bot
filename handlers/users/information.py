@@ -1,5 +1,6 @@
 from loader import dp, bot, db
 from keyboards.inline.data import informations
+from states.data import Data
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -36,5 +37,26 @@ async def give_information(message: types.Message, state: FSMContext):
            f"📥Kiritilgan pullar: {active_deposit} so'm"
 
     await message.answer(text=text, reply_markup=informations)
+
+    await Data.information.set()
+
+
+@dp.callback_query_handler(text="top_investors", state=Data.information)
+async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
+
+    top_invest_user = await db.select_all_users_datas()
+
+    lst_top_users = []
+
+    for user in top_invest_user:
+        if user[3] is not None:
+            lst_top_users.append(user[7])
+
+        else:
+            pass
+
+    lst_top_users.clear()
+
+    print(lst_top_users)
 
 
