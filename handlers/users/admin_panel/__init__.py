@@ -1,3 +1,3 @@
 from . import (
-    set_sponsor, statistic
+    set_sponsor, statistic, send_messages
 )

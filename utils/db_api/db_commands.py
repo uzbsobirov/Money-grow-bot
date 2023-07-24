@@ -137,6 +137,14 @@ class Database:
         sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
         return await self.execute(sql, issubs, user_id, execute=True)
 
+    async def update_user_invest(self, type_invest, end_invest_date, user_id):
+        sql = "UPDATE UserData SET type_invest=$1, end_invest_date=$2 WHERE user_id=$3"
+        return await self.execute(sql, type_invest, end_invest_date, user_id, execute=True)
+
+    async def update_user_end_invest(self, user_id):
+        sql = "UPDATE UserData SET end_invest_date=end_invest_date-1 WHERE user_id=$1"
+        return await self.execute(sql, user_id, execute=True)
+
     async def update_user_balance(self, balance, deposit, user_id):
         sql = "UPDATE UserData SET balance=$1, deposit=$2 WHERE user_id=$3"
         return await self.execute(sql, balance, deposit, user_id, execute=True)
@@ -147,6 +155,10 @@ class Database:
 
     async def update_user_count(self, user_id):
         sql = "UPDATE UserData SET count=count+1 WHERE user_id=$1"
+        return await self.execute(sql, user_id, execute=True)
+
+    async def update_user_balanc(self, user_id):
+        sql = "UPDATE UserData SET balance=balance+500 WHERE user_id=$1"
         return await self.execute(sql, user_id, execute=True)
 
     async def delete_user(self, user_id):

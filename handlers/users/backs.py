@@ -1,10 +1,12 @@
 from handlers.detectors import detect_is_admin
+from keyboards.inline.data import informations
 from keyboards.inline.invest.types import invest_types
 from loader import dp, bot, db
 from keyboards.default.panel.menu import menues
 from keyboards.inline.balance.menu import menues as balans_menu, payment_time
 from states.balance import Balance
 from keyboards.default.back import back
+from states.data import Data
 
 from states.invest import Invest
 from states.panel import Panel
@@ -174,3 +176,47 @@ async def move_to_main_menu(message: types.Message, state: FSMContext):
     await message.answer(text=text, reply_markup=await detect_is_admin(user_id))
 
     await state.finish()
+
+
+@dp.callback_query_handler(text='back', state=Data.investors)
+async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
+    get_bot = await bot.get_me()
+    bot_username = get_bot.username
+
+    all_user = await db.count_users()
+    len_active_deposit = 0
+    active_deposit = 0
+
+    select_users_data = await db.select_all_users_datas()
+
+    for user_data in select_users_data:
+        if user_data[3] is None:
+            pass
+
+        else:
+            len_active_deposit += 1
+
+    for user_data in select_users_data:
+        if user_data[7] == 0:
+            pass
+
+        else:
+            active_deposit += user_data[7]
+
+    text = f"@{bot_username} - Loyiha statistikasi\n\n" \
+           f"👥Aktiv foydalanuvchilar: {all_user} ta\n" \
+           f"📈Aktiv sarmoyalar: {len_active_deposit} ta\n" \
+           f"📥Kiritilgan pullar: {active_deposit} so'm"
+
+    await call.message.delete()
+    await call.message.answer(text=text, reply_markup=informations)
+
+    await Data.information.set()
+
+
+@dp.message_handler(text='◀️ Orqaga', state=Panel.delete)
+async def move_to_main_menu(message: types.Message, state: FSMContext):
+    text = "🖥 Admin menu"
+    await message.answer(text=text, reply_markup=menues)
+
+    await Panel.menu.set()

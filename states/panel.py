@@ -14,3 +14,5 @@ class Panel(StatesGroup):
 
     # Answer to user
     answer_to_user = State()
+
+    datas = State()

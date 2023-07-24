@@ -1,6 +1,7 @@
 from loader import dp, bot, db
 from keyboards.inline.data import informations
 from states.data import Data
+from keyboards.inline.back import back
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -50,13 +51,27 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
 
     for user in top_invest_user:
         if user[3] is not None:
-            lst_top_users.append(user[7])
+            if len(lst_top_users) < 11:
+                lst_top_users.append({'user_id': user[1], 'deposit': user[7]})
 
         else:
             pass
 
-    lst_top_users.clear()
+    lst_top_users.sort(key=lambda x: x['deposit'], reverse=True)
 
-    print(lst_top_users)
+    text = f"🥇TOP 10 ta investorlar\n\n"
+    cnt = 1
+
+    for item in lst_top_users:
+        get_data = await bot.get_chat(item['user_id'])
+
+        text += f"{cnt}) <code>{get_data.full_name}</code>[<code>{item['user_id']}</code>] -- {item['deposit']} so'm\n"
+        cnt += 1
+
+    await call.message.edit_text(text, reply_markup=back)
+
+    await Data.investors.set()
+
+    lst_top_users.clear()
 
 

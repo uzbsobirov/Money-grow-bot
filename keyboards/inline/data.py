@@ -10,12 +10,12 @@ informations.add(
 
 informations.add(
     InlineKeyboardButton(
-        text="💳 To'lovlar", url='t.me/kayzenuz'
+        text="💳 To'lovlar", url='https://t.me/alpha_tolovlar_kanali'
     )
 )
 informations.insert(
     InlineKeyboardButton(
-        text="💭 Muhokama", url='t.me/kayzenuz'
+        text="💭 Muhokama", url='https://t.me/ALPHA_group_uz'
     )
 )
 

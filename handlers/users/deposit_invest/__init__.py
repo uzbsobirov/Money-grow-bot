@@ -1,3 +1,3 @@
 from . import (
-    types, purchase
+    types, purchase, daily_bonus
 )

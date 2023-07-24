@@ -151,4 +151,5 @@ async def delete_get_id(message: types.Message, state: FSMContext):
 
     except ValueError as VE:
         logging.info(VE)
-        await message.answer(text="Bu kanal yoki guruh topilmadi yoki id xato kiritilgan\n\nIltimos qaytadan yuboring")
+        await message.answer(text="Bu kanal yoki guruh topilmadi yoki id xato kiritilgan\n\nIltimos qaytadan yuboring",
+                             reply_markup=back)
