@@ -120,6 +120,10 @@ class Database:
         sql = "SELECT * FROM Users WHERE user_id=$1"
         return await self.execute(sql, user_id, fetch=True)
 
+    async def select_one_user_team(self, user_id):
+        sql = "SELECT * FROM UserData WHERE parent_id=$1"
+        return await self.execute(sql, user_id, fetch=True)
+
     async def select_user_data(self, user_id):
         sql = "SELECT * FROM UserData WHERE user_id=$1"
         return await self.execute(sql, user_id, fetch=True)
@@ -158,7 +162,7 @@ class Database:
         return await self.execute(sql, user_id, execute=True)
 
     async def update_user_balanc(self, user_id):
-        sql = "UPDATE UserData SET balance=balance+500 WHERE user_id=$1"
+        sql = "UPDATE UserData SET balance=balance+1500 WHERE user_id=$1"
         return await self.execute(sql, user_id, execute=True)
 
     async def delete_user(self, user_id):

@@ -53,7 +53,7 @@ async def check_func(call: types.CallbackQuery, state: FSMContext):
             await db.update_user_balanc(user_id=int(args))
             await db.update_user_count(user_id=int(args))
             await bot.send_message(
-                chat_id=args, text="Sizning hisobingizga 500 so'm qo'shildi"
+                chat_id=args, text="Sizning hisobingizga 1500 so'm qo'shildi"
             )
 
     else:

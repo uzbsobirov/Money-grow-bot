@@ -50,7 +50,7 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
     lst_top_users = []
 
     for user in top_invest_user:
-        if user[3] is not None:
+        if user[3] is None:
             if len(lst_top_users) < 11:
                 lst_top_users.append({'user_id': user[1], 'deposit': user[7]})
 
@@ -74,4 +74,10 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
 
     lst_top_users.clear()
 
+
+@dp.callback_query_handler(text="support", state=Data.information)
+async def support_to_admin(call: types.CallbackQuery, state: FSMContext):
+    await call.message.answer(
+        text="@ALPHA_admin8989"
+    )
 
