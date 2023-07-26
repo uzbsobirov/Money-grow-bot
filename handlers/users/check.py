@@ -34,41 +34,20 @@ async def check_func(call: types.CallbackQuery, state: FSMContext):
 
     un_subscribed.add(types.InlineKeyboardButton(text="✅ Obunani tekshirish", callback_data='check_subs'))
 
-    if args:
-        if sub_status != 0:
-            text = "<b>❌Siz ba'zi kanallardan chiqib ketgansiz</b>"
-            await call.message.edit_text(text=text, reply_markup=un_subscribed)
-
-        else:
-            await call.message.delete()
-            photo = "https://t.me/almaz_medias/2"
-            text = "👤 Assalomu alaykum, hurmatli mijoz!\n" \
-                   "📝 Botimiz qoidalari:\n├─Balansni to'ldiring\n" \
-                   "├─Investitsiya kiriting\n└─Pulni hisobingizga yechib oling\n\n" \
-                   "🔸 Ushbu loyiha sarmoyali daromad hisoblanib, to'lovlar uchun pul " \
-                   "foydalanuvchilarni sarmoyasidan va homiylardan olinadi!\n\n" \
-                   f"💬 Rasmiy guruh: @{bot_username}\n📢 Yangiliklar kanali: @{bot_username}"
-            await call.message.answer_photo(photo=photo, caption=text, reply_markup=await detect_is_admin(user_id=user_id))
-
-            await db.update_user_balanc(user_id=int(args))
-            await db.update_user_count(user_id=int(args))
-            await bot.send_message(
-                chat_id=args, text="Sizning hisobingizga 1500 so'm qo'shildi"
-            )
+    if sub_status != 0:
+        text = "<b>❌Siz ba'zi kanallardan chiqib ketgansiz</b>"
+        await call.message.edit_text(text=text, reply_markup=un_subscribed)
 
     else:
-        if sub_status != 0:
-            text = "<b>❌Siz ba'zi kanallardan chiqib ketgansiz</b>"
-            await call.message.edit_text(text=text, reply_markup=un_subscribed)
+        await call.message.delete()
+        photo = "https://t.me/almaz_medias/2"
+        text = "👤 Assalomu alaykum, hurmatli mijoz!\n" \
+               "📝 Botimiz qoidalari:\n├─Balansni to'ldiring\n" \
+               "├─Investitsiya kiriting\n└─Pulni hisobingizga yechib oling\n\n" \
+               "🔸 Ushbu loyiha sarmoyali daromad hisoblanib, to'lovlar uchun pul " \
+               "foydalanuvchilarni sarmoyasidan va homiylardan olinadi!\n\n" \
+               f"💬 Rasmiy guruh: @{bot_username}\n📢 Yangiliklar kanali: @{bot_username}"
+        await call.message.answer_photo(photo=photo, caption=text, reply_markup=await detect_is_admin(user_id=user_id))
 
-        else:
-            await call.message.delete()
-            photo = "https://t.me/almaz_medias/2"
-            text = "👤 Assalomu alaykum, hurmatli mijoz!\n" \
-                   "📝 Botimiz qoidalari:\n├─Balansni to'ldiring\n" \
-                   "├─Investitsiya kiriting\n└─Pulni hisobingizga yechib oling\n\n" \
-                   "🔸 Ushbu loyiha sarmoyali daromad hisoblanib, to'lovlar uchun pul " \
-                   "foydalanuvchilarni sarmoyasidan va homiylardan olinadi!\n\n" \
-                   f"💬 Rasmiy guruh: @{bot_username}\n📢 Yangiliklar kanali: @{bot_username}"
-            await call.message.answer_photo(photo=photo, caption=text,
-                                            reply_markup=await detect_is_admin(user_id=user_id))
+
+

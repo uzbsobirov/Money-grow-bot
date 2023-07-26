@@ -3,7 +3,7 @@ import asyncio
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from loader import dp, db
+from loader import dp, db, bot
 from states.invest import Invest
 from handlers.detectors import detect_user_balance, detect_type_name, detect_is_admin
 
@@ -28,6 +28,7 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
     splited = data.split('_')
     user_data = await db.select_user_data(user_id=user_id)
     balance = user_data[0][2]
+    parent_id = user_data[0][5]
 
     check_user_afford = detect_user_balance(splited[1], balance)
 
@@ -48,11 +49,13 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
             await db.update_user_invest(type_invest=splited[1], end_invest_date=35, user_id=user_id)
 
             if user_data[0][4] < 36:
-                scheduler.add_job(daily_bonus.job, trigger='interval', minutes=1440,
-                              kwargs={'user_id': user_id, 'tarif': detect_type[3], 'balance': balance, 'call': call})
+                scheduler.add_job(daily_bonus.job, trigger='interval', minutes=1,
+                                  kwargs={'user_id': user_id, 'tarif': detect_type[3], 'balance': balance, 'call': call,
+                                          'parent_id': parent_id, 'user_data': user_data, 'bot': bot})
 
-            if user_data[0][4] == 0:
-                await db.update_user_invest(type_invest=None, end_invest_date=0, user_id=user_id)
+            # if user_data[0][4] == 0:
+            #     print(2)
+            #     await db.update_user_invest(type_invest=None, end_invest_date=0, user_id=user_id)
 
             await state.finish()
         else:
@@ -60,6 +63,7 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
 
     else:
         await call.answer(text=f"Siz allaqachon {detect_type[0]} tarifni tanlagansiz", show_alert=True)
+
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
