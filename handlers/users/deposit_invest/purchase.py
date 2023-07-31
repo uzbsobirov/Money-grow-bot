@@ -48,8 +48,9 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
             await db.update_user_invest(type_invest=splited[1], end_invest_date=35, user_id=user_id)
 
             if user_data[0][4] < 36:
-                scheduler.add_job(daily_bonus.job, trigger='interval', minutes=1,
-                                  kwargs={'user_id': user_id, 'tarif': detect_type[3], 'call': call, 'bot': bot})
+                scheduler.add_job(daily_bonus.job, trigger='interval', seconds=2,
+                                  kwargs={'user_id': user_id, 'tarif': detect_type[3], 'call': call,
+                                          'scheduler': scheduler})
 
             # if user_data[0][4] == 0:
             #     print(2)
