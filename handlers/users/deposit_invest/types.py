@@ -23,12 +23,17 @@ async def get_invest_types(call: types.CallbackQuery, state: FSMContext):
     splited = data.split('_')
     type = detect_type_name(splited[1])
 
-    text = f"<b>💰 Tarif nomi</b>: {type[0]}\n\n" \
-           f"<b>▫️ Sarmoya narxi:</b> {type[1]} so'm\n" \
-           f"▫<b>️ Jami daromad:</b> {type[2]} so'm\n" \
-           f"<b>▫️ Kunlik daromad:</b> {type[3]} so'm\n\n" \
-           f"Sarmoya kiritsangiz {type[4]} kun davomida kunlik {type[3]} so'm hisobingizga qo'shilib boradi!"
+    if splited[1] == 'four' or splited[1] == 'five' or splited[1] == 'six':
+        await call.answer(text="Bu bo'lim xozirchalik ishlamaydi", show_alert=True)
 
-    await call.message.edit_text(text, reply_markup=purchase(data=splited[1]))
+    elif splited[1] == 'one' or splited[1] == 'two' or splited[1] == 'three':
 
-    await Invest.buy.set()
+        text = f"<b>💰 Tarif nomi</b>: {type[0]}\n\n" \
+               f"<b>▫️ Sarmoya narxi:</b> {type[1]} so'm\n" \
+               f"▫<b>️ Jami daromad:</b> {type[2]} so'm\n" \
+               f"<b>▫️ Kunlik daromad:</b> {type[3]} so'm\n\n" \
+               f"Sarmoya kiritsangiz {type[4]} kun davomida kunlik {type[3]} so'm hisobingizga qo'shilib boradi!"
+
+        await call.message.edit_text(text, reply_markup=purchase(data=splited[1]))
+
+        await Invest.buy.set()

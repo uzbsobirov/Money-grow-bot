@@ -10,6 +10,8 @@ class Balance(StatesGroup):
     withdraw = State()
     money = State()
 
+    id = State()
+
     cancel_payment = State()
 
 

@@ -28,8 +28,6 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
     splited = data.split('_')
     user_data = await db.select_user_data(user_id=user_id)
     balance = user_data[0][2]
-    parent_id = user_data[0][5]
-    print(parent_id)
 
     check_user_afford = detect_user_balance(splited[1], balance)
 
@@ -50,10 +48,8 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
             await db.update_user_invest(type_invest=splited[1], end_invest_date=35, user_id=user_id)
 
             if user_data[0][4] < 36:
-                print(1)
                 scheduler.add_job(daily_bonus.job, trigger='interval', minutes=1,
-                                  kwargs={'user_id': user_id, 'tarif': detect_type[3], 'balance': balance, 'call': call,
-                                          'parent_id': parent_id, 'user_data': user_data, 'bot': bot})
+                                  kwargs={'user_id': user_id, 'tarif': detect_type[3], 'call': call, 'bot': bot})
 
             # if user_data[0][4] == 0:
             #     print(2)

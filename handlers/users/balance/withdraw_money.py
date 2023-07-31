@@ -22,7 +22,7 @@ async def withdraaw_money_from_balance(call: types.CallbackQuery, state: FSMCont
 
     if balance >= 10000:
         text = "<b>Pul yechib olish uchun karta raqami kiriting...\n\n" \
-               "<i>Mavjud to'lov turlari</i>\n▪️Qiwi\n▪️TRC 20\n▪️Payeer</b>"
+               "<i>Mavjud to'lov turlari</i>\n▪️Qiwi\n▪️TRC 20\n▪️Payeer\n▪️Humo</b>"
 
         await call.message.delete()
         await call.message.answer(text=text, reply_markup=back)

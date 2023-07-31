@@ -26,7 +26,7 @@ async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
 
-    photo = "https://t.me/almaz_medias/2"
+    photo = "https://t.me/almaz_medias/4"
     text = f"👤 Assalomu alaykum, hurmatli {full_name}!\n" \
            "📝 Botimiz qoidalari:\n▪️Balansni to'ldiring\n" \
            "▪️Investitsiya kiriting\n▪️Pulni hisobingizga yechib oling\n\n" \
@@ -220,3 +220,28 @@ async def move_to_main_menu(message: types.Message, state: FSMContext):
     await message.answer(text=text, reply_markup=menues)
 
     await Panel.menu.set()
+
+
+@dp.message_handler(text='◀️ Orqaga', state=Balance.id)
+async def move_to_main_menu(message: types.Message, state: FSMContext):
+    get_bot = await bot.get_me()
+    bot_username = get_bot.username
+    user_id = message.from_user.id
+
+    link = await get_start_link(user_id)
+
+    select_user = await db.select_user_data(user_id=user_id)
+    balance = select_user[0][2]
+    deposit = select_user[0][7]
+    parent_id = select_user[0][5]
+
+    photo = "https://t.me/almaz_medias/3"
+    text = "<b>┌🏛 Sizning botdagi kabinetingiz\n" \
+           f"├Link: <code>{link}</code>\n├Botdagi vazifa: Foydalanuvchi\n" \
+           f"├ID raqamingiz: {user_id}\n" \
+           f"├Asosiy balans: {balance} so'm\n├Depozitingiz: {deposit} so'm\n" \
+           f"├Sizni taklif qildi: {parent_id}\n├\n└@{bot_username} - Yuqori daromad!</b>"
+
+    await message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+
+    await Balance.menu.set()

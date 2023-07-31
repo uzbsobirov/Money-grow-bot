@@ -11,3 +11,5 @@ async def give_id_to_user(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
 
     await call.message.answer(text=f'Sizning id: <code>{user_id}</code>')
+
+    await Balance.id.set()

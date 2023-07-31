@@ -23,6 +23,7 @@ async def dposit_money_to_balance(call: types.CallbackQuery, state: FSMContext):
     text = f"📤 Xoxlagan to'lov turini tanlang va pul tashlang\n\n🟠 <b>Qiwi</b>: <code>+79804241329</code>\n" \
            f"🔵 <b>Payeer</b>: <code>P1096807701</code>\n" \
            f"🔘 <b>TRC 20</b>: <code>TG3JKEJahMHeHPWNEDLrSPaRqCEuTGtKPB</code>\n" \
+           f"💳 <b>Humo: </b><code>9860 2466 0101 3039</code>\n" \
            f"📝 <b>Izoh</b>: <code>{user_id}</code>\n\n" \
            f"📋 <b>Malumot:</b> <i>Tepadagi kartaga to'lov qiling, to'lov izohiga id " \
            f"raqamingizni qoldiring hamda to'lovingiz chekini ham saqlab qo'ying. " \
