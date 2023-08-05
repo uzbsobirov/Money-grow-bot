@@ -50,8 +50,8 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
     lst_top_users = []
 
     for user in top_invest_user:
-        if user[3] is None:
-            if len(lst_top_users) < 11:
+        if user[3] is not None:
+            if len(lst_top_users) < 10:
                 lst_top_users.append({'user_id': user[1], 'deposit': user[7]})
 
         else:
@@ -61,7 +61,6 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
 
     text = f"🥇TOP 10 ta investorlar\n\n"
     cnt = 1
-
     for item in lst_top_users:
         get_data = await bot.get_chat(item['user_id'])
 
