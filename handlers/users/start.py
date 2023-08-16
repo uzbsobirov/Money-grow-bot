@@ -54,6 +54,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                     count=0,
                     deposit=0,
                     active_count=0,
+                    bonus_money=0,
                     join_date=today
                 )
 
@@ -67,6 +68,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                 count=0,
                 deposit=0,
                 active_count=0,
+                bonus_money=0,
                 join_date=today
             )
 
@@ -91,12 +93,6 @@ async def bot_start(message: types.Message, state: FSMContext):
         text = start_text
         await message.answer_photo(photo=photo, caption=text,
                                    reply_markup=await detect_is_admin(user_id=user_id))
-
-        # await db.update_user_balanc(user_id=int(args))
-        # await db.update_user_count(user_id=int(args))
-        # await bot.send_message(
-        #     chat_id=args, text="Sizning hisobingizga 1500 so'm qo'shildi"
-        # )
     else:
         sub_status = 0
 
@@ -118,8 +114,3 @@ async def bot_start(message: types.Message, state: FSMContext):
             await message.answer_photo(photo=photo, caption=text,
                                        reply_markup=await detect_is_admin(user_id=user_id))
 
-            # await db.update_user_balanc(user_id=int(args))
-            # await db.update_user_count(user_id=int(args))
-            # await bot.send_message(
-            #     chat_id=args, text="Sizning hisobingizga 1500 so'm qo'shildi"
-            # )

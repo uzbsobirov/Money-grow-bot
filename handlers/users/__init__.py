@@ -1,3 +1,3 @@
 from . import (
-    help, start, admin, deposit_invest, backs, balance, information, earn_money, admin_panel, check, support
+    help, start, admin, deposit_invest, backs, balance, information, referal, admin_panel, check, support
 )

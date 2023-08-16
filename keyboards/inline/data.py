@@ -4,12 +4,6 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 informations = InlineKeyboardMarkup(row_width=2)
 informations.add(
     InlineKeyboardButton(
-        text="🥇 Investorlar (TOP)", callback_data='top_investors'
-    )
-)
-
-informations.add(
-    InlineKeyboardButton(
         text="💳 To'lovlar", url='https://t.me/alpha_tolovlar_kanali'
     )
 )

@@ -3,7 +3,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 # For user
 buttons = [
     KeyboardButton(text="💰 Hisobim"),
-    KeyboardButton(text="💵 Pul ishlash"),
+    KeyboardButton(text="🔗 Referal"),
     KeyboardButton(text="📚 Ma'lumot"),
     KeyboardButton(text="📝 Murojaat")
 ]

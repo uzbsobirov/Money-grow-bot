@@ -28,6 +28,7 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
     splited = data.split('_')
     user_data = await db.select_user_data(user_id=user_id)
     balance = user_data[0][2]
+    parent_id = user_data[0][5]
 
     check_user_afford = detect_user_balance(splited[1], balance)
 
@@ -41,14 +42,30 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
                 text=f"🎉 Tabriklaymiz, siz {detect_type[0]} tarifini sotib oldingiz",
                 reply_markup=await detect_is_admin(user_id)
             )
+            detect_discount = (detect_type[1] * 10) / 100
+            if parent_id:
+                await db.update_user_bonus_id(bonus_id=user_id, user_id=parent_id)
+                user_info = await db.select_user_data(user_id=user_id)
+                bonus_id = user_info[0][9]
+
+                select_parent_id = await db.select_user_data(user_id=parent_id)
+                parent_balance = select_parent_id[0][2]
+                bonus_money = select_parent_id[0][10]
+                if bonus_id != user_id:
+                    await db.update_user_balancee(balance=parent_balance+int(detect_discount), user_id=parent_id)
+                    await db.update_user_bonus_meney(bonus_money=bonus_money+int(detect_discount), user_id=parent_id)
+                    await bot.send_message(
+                        chat_id=parent_id,
+                        text="Sizning hisobingizga bonus puli qo'shildi"
+                    )
 
             new_balance = balance - detect_type[1]
             await db.update_user_balancee(balance=new_balance, user_id=user_id)
 
-            await db.update_user_invest(type_invest=splited[1], end_invest_date=35, user_id=user_id)
+            await db.update_user_invest(type_invest=splited[1], end_invest_date=30, user_id=user_id)
 
-            if user_data[0][4] < 36:
-                scheduler.add_job(daily_bonus.job, trigger='interval', seconds=2,
+            if user_data[0][4] < 31:
+                scheduler.add_job(daily_bonus.job, trigger='interval', seconds=1,
                                   kwargs={'user_id': user_id, 'tarif': detect_type[3], 'call': call,
                                           'scheduler': scheduler})
 

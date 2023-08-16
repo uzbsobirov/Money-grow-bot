@@ -15,12 +15,13 @@ async def give_information(message: types.Message, state: FSMContext):
     all_user = await db.count_users()
     len_active_deposit = 0
     active_deposit = 0
+    nonactive = 0
 
     select_users_data = await db.select_all_users_datas()
 
     for user_data in select_users_data:
         if user_data[3] is None:
-            pass
+            nonactive += 1
 
         else:
             len_active_deposit += 1
@@ -37,7 +38,8 @@ async def give_information(message: types.Message, state: FSMContext):
            f"📈Aktiv sarmoyalar: {len_active_deposit} ta\n" \
            f"📥Kiritilgan pullar: {active_deposit} so'm"
 
-    await message.answer(text=text, reply_markup=informations)
+    photo_link = "https://t.me/almaz_medias/8"
+    await message.answer_photo(photo=photo_link, caption=text, reply_markup=informations)
 
     await Data.information.set()
 

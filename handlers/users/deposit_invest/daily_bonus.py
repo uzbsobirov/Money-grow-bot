@@ -6,7 +6,6 @@ async def job(user_id, tarif, call, scheduler):
     end_invest = user_data[0][4]
 
     if end_invest > 0:
-        print(end_invest)
         balance = user_data[0][2]
         parent_id = user_data[0][5]
 
@@ -22,7 +21,10 @@ async def job(user_id, tarif, call, scheduler):
                 chat_id=parent_id, text="Sizning hisobingizga 1500 so'm qo'shildi"
             )
 
-    elif end_invest == 0 or end_invest < 0:
+    elif end_invest == 0:
+        await db.update_user_invest(type_invest=None, end_invest_date=0, user_id=user_id)
+        await call.message.answer(text="Vib vaqti tugadi")
         scheduler.shutdown()
+
 
 

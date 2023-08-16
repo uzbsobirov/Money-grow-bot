@@ -65,6 +65,8 @@ class Database:
         count BigInt,
         deposit BigInt NULL,
         active_count BIgInt,
+        bonus_id BigInt NULL,
+        bonus_money BigInt NULL,
         join_date DATE
         );
         """
@@ -94,10 +96,10 @@ class Database:
         sql = "INSERT INTO users (full_name, username, user_id, join_date) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, full_name, username, user_id, join_date, fetchrow=True)
 
-    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, deposit, active_count, join_date: str):
-        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, join_date) " \
-              "VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *"
-        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, join_date, fetchrow=True)
+    async def add_user_data(self, user_id: str, balance: str, type_invest: int, end_invest_date: int, parent_id, count, deposit, active_count, bonus_money, join_date: str):
+        sql = "INSERT INTO UserData (user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, bonus_money, join_date) " \
+              "VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *"
+        return await self.execute(sql, user_id, balance, type_invest, end_invest_date, parent_id, count, deposit, active_count, bonus_money, join_date, fetchrow=True)
 
     async def add_sponsor(self, chat_id: str, chat_title: str, chat_type: int, chat_link: str, join_date):
         sql = "INSERT INTO Sponsor (chat_id, chat_title, chat_type, chat_link, join_date) " \
@@ -153,9 +155,17 @@ class Database:
         sql = "UPDATE UserData SET balance=$1, deposit=$2 WHERE user_id=$3"
         return await self.execute(sql, balance, deposit, user_id, execute=True)
 
+    async def update_user_bonus_id(self, bonus_id, user_id):
+        sql = "UPDATE UserData SET bonus_id=$1 WHERE user_id=$2"
+        return await self.execute(sql, bonus_id, user_id, execute=True)
+
     async def update_user_balancee(self, balance, user_id):
         sql = "UPDATE UserData SET balance=$1 WHERE user_id=$2"
         return await self.execute(sql, balance, user_id, execute=True)
+
+    async def update_user_bonus_meney(self, bonus_money, user_id):
+        sql = "UPDATE UserData SET bonus_money=$1 WHERE user_id=$2"
+        return await self.execute(sql, bonus_money, user_id, execute=True)
 
     async def update_user_count(self, user_id):
         sql = "UPDATE UserData SET count=count+1 WHERE user_id=$1"
