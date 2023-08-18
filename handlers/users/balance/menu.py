@@ -35,57 +35,31 @@ async def check_user_balance(message: types.Message, state: FSMContext):
     bonus_money = select_user[0][10]
 
     detect_status = detect_type_name(status)
-    print(detect_status)
 
     photo = "https://t.me/almaz_medias/10"
-    if status:
-        if bonus_money != 0:
-            text = "Hisobingiz ma'lumotlari!\n\n" \
-                   f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
-                   f"Sizning VIP⚙️: {detect_status[0]}\n" \
-                   f"Sizning pulingiz💰: {balance} \n" \
-                   f"Keshbekingiz🪙: {bonus_money} so'm\n" \
-                   f"Do'stlaringiz👬: {active}\n" \
-                   f"Ismingiz📡: {full_name}\n\n" \
-                   f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+    if len(detect_status) != 0:
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
 
-            await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
-
-        else:
-            text = "Hisobingiz ma'lumotlari!\n\n" \
-                   f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
-                   f"Sizning VIP⚙️: Siz xarid qilmadingiz❌\n" \
-                   f"Sizning pulingiz💰: {balance} \n" \
-                   f"Keshbekingiz🪙: 0\n" \
-                   f"Do'stlaringiz👬: {active}\n" \
-                   f"Ismingiz📡: {full_name}\n\n" \
-                   f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
-
-            await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
+        await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
 
     else:
-        if bonus_money != 0:
-            text = "Hisobingiz ma'lumotlari!\n\n" \
-                   f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
-                   f"Sizning VIP⚙️: {detect_status[0]}\n" \
-                   f"Sizning pulingiz💰: {balance} \n" \
-                   f"Keshbekingiz🪙: {bonus_money} so'm\n" \
-                   f"Do'stlaringiz👬: {active}\n" \
-                   f"Ismingiz📡: {full_name}\n\n" \
-                   f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+        print('if 1-1')
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
 
-            await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
-
-        else:
-            text = "Hisobingiz ma'lumotlari!\n\n" \
-                   f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
-                   f"Sizning VIP⚙️: Siz xarid qilmadingiz❌\n" \
-                   f"Sizning pulingiz💰: {balance} \n" \
-                   f"Keshbekingiz🪙: 0\n" \
-                   f"Do'stlaringiz👬: {active}\n" \
-                   f"Ismingiz📡: {full_name}\n\n" \
-                   f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
-
-            await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
+        await message.answer_photo(photo=photo, caption=text, reply_markup=menues)
 
     await Balance.menu.set()

@@ -10,7 +10,7 @@ buttons = [
 
 start_user = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, one_time_keyboard=True)
 start_user.add(
-    KeyboardButton(text="➕ Investitsiya kiritish")
+    KeyboardButton(text="🔋VIP ZONA")
 )
 start_user.add(*buttons)
 
@@ -18,7 +18,7 @@ start_user.add(*buttons)
 # For admin
 start_admin = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True, one_time_keyboard=True)
 start_admin.add(
-    KeyboardButton(text="➕ Investitsiya kiritish")
+    KeyboardButton(text="🔋VIP ZONA")
 )
 start_admin.add(*buttons)
 start_admin.add(

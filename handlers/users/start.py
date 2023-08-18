@@ -83,13 +83,16 @@ async def bot_start(message: types.Message, state: FSMContext):
     all_sponsors = await db.select_all_sponsor()
 
     start_text = "🇺🇿 Assalomu alaykum, hurmatli mijoz!\n" \
-                 "📝 Botimiz qoidalari:\n▪️ Balansni to'ldiring\n" \
-                 "▪️ Investitsiya kiriting\n▪️ Pulni hisobingizga yechib oling\n\n" \
-                 "🔸 ALPHA - qoʻshilishga xush kelibsiz, bu yerda siz edial daromad olishingiz mumkun\n\n" \
-                 "💬 Rasmiy guruh: @ALPHA_group_uz\n📢 To'lovlar kanali: @alpha_tolovlar_kanali"
+                 "📝 Botimiz qoidalari:\n" \
+                 "▪️ Balansni to'ldiring\n" \
+                 "▪️ Investitsiya kiriting\n" \
+                 "▪️ Pulni hisobingizga yechib oling\n\n" \
+                 "💹 MONIY GROW - ga xush kelibsiz, bu yerda siz edial daromad olishingiz mumkun.\n" \
+                 "Botning imkoniyatlari tez toʻlov va ishonchli sarmoya \n\n" \
+                 "💬 Rasmiy guruh: @money_grow_group\n📢 To'lovlar kanali: @money_grow_tolovlar"
 
     if len(all_sponsors) == 0:
-        photo = "https://t.me/almaz_medias/4"
+        photo = "https://t.me/almaz_medias/12"
         text = start_text
         await message.answer_photo(photo=photo, caption=text,
                                    reply_markup=await detect_is_admin(user_id=user_id))
@@ -109,7 +112,7 @@ async def bot_start(message: types.Message, state: FSMContext):
             await message.answer(text=text, reply_markup=check(sponsors=all_sponsors, status=sub_status))
 
         else:
-            photo = "https://t.me/almaz_medias/2"
+            photo = "https://t.me/almaz_medias/12"
             text = start_text
             await message.answer_photo(photo=photo, caption=text,
                                        reply_markup=await detect_is_admin(user_id=user_id))

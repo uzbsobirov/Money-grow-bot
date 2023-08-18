@@ -79,6 +79,6 @@ async def give_top_investors(call: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(text="support", state=Data.information)
 async def support_to_admin(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer(
-        text="@ALPHA_admin8989"
+        text="@money_grow01"
     )
 

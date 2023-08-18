@@ -1,8 +1,9 @@
-from handlers.detectors import detect_is_admin
+from handlers.detectors import detect_is_admin, detect_type_name
 from keyboards.inline.data import informations
 from keyboards.inline.invest.types import invest_types
 from loader import dp, bot, db
 from keyboards.default.panel.menu import menues
+from keyboards.inline.balance.menu import menues
 from keyboards.inline.balance.menu import menues as balans_menu, payment_time
 from states.balance import Balance
 from keyboards.default.back import back
@@ -26,13 +27,15 @@ async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
 
-    photo = "https://t.me/almaz_medias/4"
-    text = f"👤 Assalomu alaykum, hurmatli {full_name}!\n" \
-           "📝 Botimiz qoidalari:\n▪️Balansni to'ldiring\n" \
-           "▪️Investitsiya kiriting\n▪️Pulni hisobingizga yechib oling\n\n" \
-           "🔸 Ushbu loyiha sarmoyali daromad hisoblanib, to'lovlar uchun pul " \
-           "foydalanuvchilarni sarmoyasidan va homiylardan olinadi!\n\n" \
-           f"💬 Rasmiy guruh: @{bot_username}\n📢 Yangiliklar kanali: @{bot_username}"
+    photo = "https://t.me/almaz_medias/11"
+    text = "🇺🇿 Assalomu alaykum, hurmatli mijoz!\n" \
+           "📝 Botimiz qoidalari:\n" \
+           "▪️ Balansni to'ldiring\n" \
+           "▪️ Investitsiya kiriting\n" \
+           "▪️ Pulni hisobingizga yechib oling\n\n" \
+           "💹 MONIY GROW - ga xush kelibsiz, bu yerda siz edial daromad olishingiz mumkun.\n" \
+           "Botning imkoniyatlari tez toʻlov va ishonchli sarmoya \n\n" \
+           "💬 Rasmiy guruh: @money_grow_group\n📢 To'lovlar kanali: @money_grow_tolovlar"
     await call.message.answer_photo(photo=photo, caption=text, reply_markup=await detect_is_admin(user_id=user_id))
 
     await state.finish()
@@ -85,27 +88,54 @@ async def move_to_admin_menu(message: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(text='back', state=Balance.deposit)
 async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
-    get_bot = await bot.get_me()
-    bot_username = get_bot.username
+    full_name = call.from_user.full_name
     user_id = call.from_user.id
-
-    link = await get_start_link(user_id)
 
     await call.message.delete()
 
+    active = 0
+    nonactive = 0
+    select_user_teams = await db.select_one_user_team(user_id)
+
+    for user in select_user_teams:
+        if user[3] is not None:
+            active += 1
+
+        else:
+            nonactive += 1
+
     select_user = await db.select_user_data(user_id=user_id)
     balance = select_user[0][2]
-    deposit = select_user[0][7]
-    parent_id = select_user[0][5]
+    date_joined = select_user[0][-1]
+    status = select_user[0][3]
+    bonus_money = select_user[0][10]
 
-    photo = "https://t.me/almaz_medias/3"
-    text = "<b>┌🏛 Sizning botdagi kabinetingiz\n" \
-           f"├Link: <code>{link}</code>\n├Botdagi vazifa: Foydalanuvchi\n" \
-           f"├ID raqamingiz: {user_id}\n" \
-           f"├Asosiy balans: {balance} so'm\n├Depozitingiz: {deposit} so'm\n" \
-           f"├Sizni taklif qildi: {parent_id}\n├\n└@{bot_username} - Yuqori daromad!</b>"
+    detect_status = detect_type_name(status)
 
-    await call.message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+    photo = "https://t.me/almaz_medias/10"
+    if len(detect_status) != 0:
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+
+        await call.message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+
+    else:
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+
+        await call.message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
 
     await Balance.menu.set()
 
@@ -135,25 +165,52 @@ async def move_to_admin_menu(message: types.Message, state: FSMContext):
 
 @dp.message_handler(text='◀️ Orqaga', state=Balance.withdraw)
 async def move_to_main_menu(message: types.Message, state: FSMContext):
-    get_bot = await bot.get_me()
-    bot_username = get_bot.username
+    full_name = message.from_user.full_name
     user_id = message.from_user.id
 
-    link = await get_start_link(user_id)
+    active = 0
+    nonactive = 0
+    select_user_teams = await db.select_one_user_team(user_id)
+
+    for user in select_user_teams:
+        if user[3] is not None:
+            active += 1
+
+        else:
+            nonactive += 1
 
     select_user = await db.select_user_data(user_id=user_id)
     balance = select_user[0][2]
-    deposit = select_user[0][7]
-    parent_id = select_user[0][5]
+    date_joined = select_user[0][-1]
+    status = select_user[0][3]
+    bonus_money = select_user[0][10]
 
-    photo = "https://t.me/almaz_medias/3"
-    text = "<b>┌🏛 Sizning botdagi kabinetingiz\n" \
-           f"├Link: <code>{link}</code>\n├Botdagi vazifa: Foydalanuvchi\n" \
-           f"├ID raqamingiz: {user_id}\n" \
-           f"├Asosiy balans: {balance} so'm\n├Depozitingiz: {deposit} so'm\n" \
-           f"├Sizni taklif qildi: {parent_id}\n├\n└@{bot_username} - Yuqori daromad!</b>"
+    detect_status = detect_type_name(status)
 
-    await message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+    photo = "https://t.me/almaz_medias/10"
+    if len(detect_status) != 0:
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+
+        await message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
+
+    else:
+        text = "Hisobingiz ma'lumotlari!\n\n" \
+               f"Foydalanuvchi identifikatori🛠️: {user_id}\n" \
+               f"Sizning VIP⚙️: {detect_status[0]}\n" \
+               f"Sizning pulingiz💰: {balance} \n" \
+               f"Keshbekingiz🪙: {bonus_money} so'm\n" \
+               f"Do'stlaringiz👬: {active}\n" \
+               f"Ismingiz📡: {full_name}\n\n" \
+               f"Siz bizning platformamizdan buyon foydalanasiz - {date_joined}"
+
+        await message.answer_photo(photo=photo, caption=text, reply_markup=balans_menu)
 
     await Balance.menu.set()
 

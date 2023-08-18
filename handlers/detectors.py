@@ -31,7 +31,7 @@ def detect_type_name(data):
         return 'Vib 5', 650000, 1950000, 55000, 30
 
     elif data is None:
-        return ('Siz xarid qilmadingiz❌')
+        return ['Siz xarid qilmadingiz❌']
 
 
 def detect_user_balance(data, balance):

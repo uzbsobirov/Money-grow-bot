@@ -14,12 +14,12 @@ async def job(user_id, tarif, call, scheduler):
         await db.update_user_balancee(balance=new_balance, user_id=user_id)
         await call.message.answer(text=f"Sizning hisobingizga {tarif} so'm qo'shildi")
 
-        if parent_id:
-            await db.update_user_balanc(user_id=int(parent_id))
-            await db.update_user_count(user_id=int(parent_id))
-            await bot.send_message(
-                chat_id=parent_id, text="Sizning hisobingizga 1500 so'm qo'shildi"
-            )
+        # if parent_id:
+        #     await db.update_user_balanc(user_id=int(parent_id))
+        #     await db.update_user_count(user_id=int(parent_id))
+        #     await bot.send_message(
+        #         chat_id=parent_id, text="Sizning hisobingizga 1500 so'm qo'shildi"
+        #     )
 
     elif end_invest == 0:
         await db.update_user_invest(type_invest=None, end_invest_date=0, user_id=user_id)
