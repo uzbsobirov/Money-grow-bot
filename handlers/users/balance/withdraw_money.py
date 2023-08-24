@@ -22,7 +22,7 @@ async def withdraaw_money_from_balance(call: types.CallbackQuery, state: FSMCont
 
     if balance >= 10000:
         text = "<b>Pul yechib olish uchun karta raqami kiriting...\n\n" \
-               "<i>Mavjud to'lov turlari</i>\n▪️Qiwi\n▪️TRC 20\n▪️Payeer\n▪️Humo</b>"
+               "<i>Mavjud to'lov turlari</i>\n\n▪️Humo</b>"
 
         await call.message.delete()
         await call.message.answer(text=text, reply_markup=back)
@@ -116,8 +116,12 @@ async def final_withdraw(call: types.CallbackQuery, state: FSMContext):
     select_user_data = await db.select_user_data(int(user_id))
     balance = select_user_data[0][2]
 
+    get_user = await bot.get_chat(user_id)
+    full_name = get_user.full_name
+    user_mention = call.from_user.get_mention(full_name)
+
     end_balance = balance - int(summa)
-    ended = await db.update_user_balancee(end_balance, int(user_id))
+    await db.update_user_balancee(end_balance, int(user_id))
 
     await call.message.delete()
 
@@ -125,6 +129,15 @@ async def final_withdraw(call: types.CallbackQuery, state: FSMContext):
         chat_id=call.message.chat.id,
         text="Foydalanuvchi puli to'lab berildi",
         reply_markup=start_admin
+    )
+
+    text = f"✅ Pul toʻlandi: {user_mention}\n" \
+           f"👤 Foydalanuvchi ID: {user_id}\n" \
+           f"💸 Miqdor: {summa} soʻm"
+
+    await bot.send_message(
+        chat_id=-1001943689507,
+        text=text
     )
 
     await bot.send_message(

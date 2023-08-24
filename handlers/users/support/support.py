@@ -29,8 +29,4 @@ async def get_support_text(message: types.Message, state: FSMContext):
 
     await message.send_copy(chat_id=ADMINS[0], reply_markup=answer_to_user(user_id))
 
-    await state.update_data(
-        {'answer_user_id': user_id}
-    )
-
     await state.reset_state(with_data=False)

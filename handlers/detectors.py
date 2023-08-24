@@ -16,19 +16,19 @@ def detect_type_name(data):
         return 'Vib 1', 30000, 75000, 2500, 30
 
     elif data == 'two':
-        return 'Vib 2', 60000, 180000, 5000, 30
+        return 'Vib 2', 60000, 150000, 5000, 30
 
     elif data == 'three':
-        return 'Vib 3', 150000, 450000, 13000, 30
+        return 'Vib 3', 150000, 390000, 13000, 30
 
     elif data == 'four':
-        return 'Vib 4', 250000, 750000, 21000, 30
+        return 'Vib 4', 250000, 630000, 21000, 30
 
     elif data == 'five':
-        return 'Vib 5', 360000, 1080000, 31000, 30
+        return 'Vib 5', 360000, 930000, 31000, 30
 
     elif data == 'six':
-        return 'Vib 5', 650000, 1950000, 55000, 30
+        return 'Vib 6', 650000, 1650000, 55000, 30
 
     elif data is None:
         return ['Siz xarid qilmadingiz❌']

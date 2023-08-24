@@ -57,6 +57,10 @@ async def bot_start(message: types.Message, state: FSMContext):
                     bonus_money=0,
                     join_date=today
                 )
+                await bot.send_message(
+                    chat_id=int(args),
+                    text=f"<b>{user_mention} sizning havolangiz orqali botga kirdi</b>"
+                )
 
         else:
             await db.add_user_data(

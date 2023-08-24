@@ -20,9 +20,7 @@ async def dposit_money_to_balance(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
 
-    text = f"📤 Xoxlagan to'lov turini tanlang va pul tashlang\n\n🟠 <b>Qiwi</b>: <code>+79804241329</code>\n" \
-           f"🔵 <b>Payeer</b>: <code>P1096807701</code>\n" \
-           f"🔘 <b>TRC 20</b>: <code>TG3JKEJahMHeHPWNEDLrSPaRqCEuTGtKPB</code>\n" \
+    text = f"📤 Xoxlagan to'lov turini tanlang va pul tashlang\n\n" \
            f"💳 <b>Humo: </b><code>9860 2466 0101 3039</code>\n" \
            f"📝 <b>Izoh</b>: <code>{user_id}</code>\n\n" \
            f"📋 <b>Malumot:</b> <i>Tepadagi kartaga to'lov qiling, to'lov izohiga id " \
@@ -32,7 +30,7 @@ async def dposit_money_to_balance(call: types.CallbackQuery, state: FSMContext):
     await call.message.answer(text=text, reply_markup=payment_time())
 
     await state.update_data(
-        {'user_id': user_id, 'user_mention': user_mention}
+        {'user_id': user_id, 'user_mention': user_mention, 'full_name': full_name}
     )
 
     await Balance.deposit.set()
@@ -65,9 +63,9 @@ async def get_payment_check(message: types.Message, state: FSMContext):
         await bot.send_message(chat_id=message.chat.id, text=text, reply_markup=await detect_is_admin(user_id))
 
         await bot.send_photo(chat_id=ADMINS[0], photo=photo_file_id, caption=caption,
-                                               reply_markup=admin_check_payment(user_id))
+                             reply_markup=admin_check_payment(user_id))
 
-        await state.reset_state(with_data=False)
+        await state.finish()
 
     except Exception as error:
         logging.info(error)
@@ -77,7 +75,6 @@ async def get_payment_check(message: types.Message, state: FSMContext):
 async def user_id_paid(call: types.CallbackQuery, state: FSMContext):
     data = call.data
     splited = data.split('_')
-    state_data = await state.get_data()
 
     if splited[0] == 'checked':
         await state.update_data(
@@ -107,6 +104,9 @@ async def payment_touser(message: types.Message, state: FSMContext):
     msg = message.text
     data = await state.get_data()
     user_id = data.get('checked_user_id')
+    get_user = await bot.get_chat(user_id)
+    full_name = get_user.first_name
+    user_mention = f"<a href='tg://user?id={user_id}'>{full_name}</a>"
 
     try:
         summa = int(msg)

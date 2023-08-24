@@ -27,7 +27,7 @@ async def move_to_main_menu(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
 
-    photo = "https://t.me/almaz_medias/11"
+    photo = "https://t.me/almaz_medias/12"
     text = "🇺🇿 Assalomu alaykum, hurmatli mijoz!\n" \
            "📝 Botimiz qoidalari:\n" \
            "▪️ Balansni to'ldiring\n" \

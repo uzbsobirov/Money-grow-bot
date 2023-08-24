@@ -1,16 +1,12 @@
 import pytz
-import asyncio
-
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
-from loader import dp, db, bot
-from states.invest import Invest
-from handlers.detectors import detect_user_balance, detect_type_name, detect_is_admin
-
+from aiogram import executor
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram import executor
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from handlers.detectors import detect_user_balance, detect_type_name, detect_is_admin
+from loader import dp, db, bot
+from states.invest import Invest
 from . import daily_bonus
 
 tz = pytz.timezone('Asia/Tashkent')
@@ -29,6 +25,7 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
     user_data = await db.select_user_data(user_id=user_id)
     balance = user_data[0][2]
     parent_id = user_data[0][5]
+    which_type = user_data[0][3]
 
     check_user_afford = detect_user_balance(splited[1], balance)
 
@@ -75,7 +72,7 @@ async def buy_some_type(call: types.CallbackQuery, state: FSMContext):
             await call.answer(check_user_afford, show_alert=True)
 
     else:
-        await call.answer(text=f"Siz allaqachon {detect_type[0]} tarifni tanlagansiz", show_alert=True)
+        await call.answer(text=f"Siz allaqachon {detect_type_name(which_type)[0]} tarifni tanlagansiz", show_alert=True)
 
 
 if __name__ == "__main__":
